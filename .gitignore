@@ -1,0 +1,60 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# dotenv environment files
+.env
+.env.*   # for .env.development, .env.production, etc.
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Optional npm cache directory
+.npm
+
+# Coverage directory used by test tools
+coverage/
+
+# VS Code settings
+.vscode/
+
+# Build output
+dist/
+build/
+out/
+
+# Temporary files
+*.tgz
+*.tar.gz
+*.swp
+*.tmp
+*.bak
+
+# TypeScript (if using)
+*.tsbuildinfo
+
+# Debug
+node_inspect.json
+
+# PM2 logs and pids
+.pids/
+*.pm2.log
+
+# IDEs
+.idea/
+*.sublime-workspace
+*.sublime-project
