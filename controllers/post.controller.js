@@ -6,6 +6,16 @@ import { User } from "../models/user.model.js"
 import { Post } from "../models/post.model.js"
 
 
+/*
+Input: title, content, tags, isPublished from req.body
+Steps:
+- Get userId from JWT (req.user)
+- Validate required fields (title, content, tags)
+- Normalize tags (lowercase & trim)
+- Create post in DB with defaults (likes=[], commentCount=0, shares=0)
+- Populate author info (username, email)
+- Return created post
+*/
 
 
 const createPost = asynchandler(async(req, res) => {
@@ -62,6 +72,20 @@ const createPost = asynchandler(async(req, res) => {
     )
 })
 
+
+/*
+Input: page, limit, tags, author, sortby from req.query
+Steps:
+- Set default page=1, limit=10, sortby="createdAt"
+- Build filter object: isPublished=true
+- If tags provided, filter posts that match tags
+- If author provided, filter posts by author
+- Count total posts for pagination
+- Calculate skip for pagination
+- Fetch posts with filter, populate author info
+- Sort, skip, and limit for pagination
+- Return posts with meta info (totalPosts, totalPages, currentPage)
+*/
 
 const getallposts = asynchandler(async (req, res) => {
     // get query params from request (with default values)
@@ -120,6 +144,16 @@ const getallposts = asynchandler(async (req, res) => {
 });
 
 
+/*
+Input: postId from URL params
+Steps:
+- Validate postId
+- Fetch post by postId
+- Populate author info (username, email)
+- Throw error if post not found
+- Return the post
+*/
+
 const getPostById = asynchandler(async(req, res) =>{
     const { postId } = req.params
     if(!postId){
@@ -145,6 +179,18 @@ const getPostById = asynchandler(async(req, res) =>{
      
 })
 
+
+/*
+Input: postId from URL params, title/content/tags from req.body
+Steps:
+- Fetch post by postId
+- Throw error if post not found
+- Check if authenticated user is the author
+- Update provided fields (title, content, tags)
+- Save post
+- Populate author info (username, email)
+- Return updated post
+*/
 
 const updatePost = asynchandler(async(req, res) => {
     const {title, content,tags } = req.body
@@ -188,6 +234,16 @@ const updatePost = asynchandler(async(req, res) => {
 })
 
 
+/*
+Input: postId from URL params
+Steps:
+- Fetch post by postId
+- Throw error if post not found
+- Check if authenticated user is the author
+- Delete the post (or soft delete if needed)
+- Return success message
+*/
+
 const deletePost = asynchandler(async(req, res) => {
     const {postId} = req.params
     // checking for the postid 
@@ -228,6 +284,19 @@ const deletePost = asynchandler(async(req, res) => {
         )
     )
 })
+
+
+/*
+Input: postId from URL params, userId from JWT
+Steps:
+- Fetch post by postId
+- Throw error if post not found
+- Check if user already liked the post
+    - If yes, remove user from likes array (unlike)
+    - If no, add userId to likes array (like)
+- Save post
+- Return updated like count and message
+*/
 
 const likePost = asynchandler(async(req, res) => {
     const {postId} = req.params
