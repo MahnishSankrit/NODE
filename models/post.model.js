@@ -35,10 +35,15 @@ const postSchema = new mongoose.Schema(
         isPublished: {
             type: Boolean,
             default: false
-        },
+         },
         shares:{
             type: Number,
             default: 0
+        },
+        likecount: {
+            type: Number,
+            default: 0
+
         }
         
     },
