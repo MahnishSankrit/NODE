@@ -3,6 +3,8 @@ import express from "express";
 import connectDB  from "../db/db.js";
 import Todorouter from "../routes/task.routes.js";
 import userRouter from "../routes/user.routes.js"
+import postService from "../routes/post.routes.js"
+import commentService from "../routes/comment.route.js"
 
 
 const app = express();
@@ -12,6 +14,8 @@ app.use(express.static("public"));
 
 app.use("/api/v1/tasks",Todorouter)
 app.use("/api/v1/users",userRouter)
+app.use("/api/v1/posts",postService)
+app.use("/api/v1/comments",commentService)
 
 
 connectDB()

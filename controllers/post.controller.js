@@ -4,7 +4,7 @@ import { ApiError } from "../utils/apiError.js"
 import { ApiResponse } from "../utils/apiResponse.js"
 import { User } from "../models/user.model.js"
 import { Post } from "../models/post.model.js"
-import { use } from "react"
+
 
 
 
@@ -39,7 +39,7 @@ const createPost = asynchandler(async(req, res) => {
         title: title,
         content: content,
         author: userId,
-        likes: 0,
+        likes: [],
         isPublished: isPublished?? true,
         commentCount: 0,
         shares: 0,
@@ -147,7 +147,7 @@ const getPostById = asynchandler(async(req, res) =>{
 
 
 const updatePost = asynchandler(async(req, res) => {
-    const {title, content } = req.body
+    const {title, content,tags } = req.body
     if(!title){
         throw new ApiError(400, "title is not here to update")
     }
@@ -164,7 +164,7 @@ const updatePost = asynchandler(async(req, res) => {
     }
     
     //now here i will update
-    if(post.author.toString() !== req.userId.toString()){
+    if(post.author.toString() !== req.user._id.toString()){
         throw new ApiError(400, "you are not authorized to upadate anything")
     }
   
@@ -221,7 +221,7 @@ const deletePost = asynchandler(async(req, res) => {
 
     return res.status(200)
     .json(
-        ApiResponse(
+        new ApiResponse(
             200, 
             null,
             "post deleted successfully"
@@ -229,7 +229,7 @@ const deletePost = asynchandler(async(req, res) => {
     )
 })
 
-const likPost = asynchandler(async(req, res) => {
+const likePost = asynchandler(async(req, res) => {
     const {postId} = req.params
     const userId = req.user._id
 
@@ -256,19 +256,16 @@ const likPost = asynchandler(async(req, res) => {
     }
     
      // updating the postliked count 
-     post.likecount = post.likes.length
+       post.likesCount = post.likes.length; // optional field for easy count
+    await post.save();
 
-    //save updated post
-    await post.save()
-
-    return res.status(200)
-    .json(
-          new ApiResponse(
-            200,
-            { likes: post.likes, likeCount: post.likeCount },
-            message
-        )            
-    )
+    // Return likes array AND count
+    return res.status(200).json(
+        new ApiResponse(200, {
+            likes: post.likes,
+            likeCount: post.likes.length
+        }, message)
+    );
 })
 
 
@@ -279,5 +276,5 @@ export{
     getPostById,
     updatePost,
     deletePost,
-    likPost
+    likePost
 }

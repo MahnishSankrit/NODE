@@ -1,4 +1,4 @@
-import {asynchandler} from "../utils/asynchandler.js"
+import {asynchandler} from "../utils/asynhandler.js"
 import { ApiError } from "../utils/apiError.js"
 import { ApiResponse } from "../utils/apiResponse.js"
 import {User} from "../models/user.model.js"
@@ -65,7 +65,7 @@ const createComment = asynchandler(async(req, res) => {
             200,
             { 
                 comment,
-                commentCount:commentCount
+                commentCount:post.commentCount
             },
             "comment generate successfully"
         )
@@ -77,15 +77,10 @@ Input: postId from URL params
 Steps:
 
 Validate postId.
-
 Fetch post by postId — throw error if not found.
-
 Fetch all comments where post = postId.
-
 Optionally populate user info (username, email).
-
 Sort by createdAt descending (or ascending depending on UI).
-
 Return comment list.
  */
 
@@ -244,7 +239,7 @@ const likeComment = asynchandler(async(req, res) => {
         throw new ApiError(400, "comment is not found")
     }
 
-    let message;
+    let message;  // checking if the user is already added the comentlike
     if(comment.likes.includes(userId.toString())){  //Always convert _id to string when comparing MongoDB ObjectIds:
         //unlike
         comment.likes.pull(userId)
