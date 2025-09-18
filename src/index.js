@@ -5,9 +5,16 @@ import Todorouter from "../routes/task.routes.js";
 import userRouter from "../routes/user.routes.js"
 import postService from "../routes/post.routes.js"
 import commentService from "../routes/comment.route.js"
+import cors from "cors"
 
 
 const app = express();
+//using the cors for my frontend 
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+}))
+
 app.use(express.json());
 app.use(express.urlencoded({extended: true, limit: "16kb"}));
 app.use(express.static("public"));
