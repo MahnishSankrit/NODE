@@ -17,6 +17,7 @@ function Login() {
             console.log("response data", response.data);
 
             localStorage.setItem("token", response.data.data.acessToken);
+            localStorage.setItem("user", JSON.stringify(response.data.data.user)); // storing the user info
             alert("login successfully")
 
             navigate("/Dashboard")
