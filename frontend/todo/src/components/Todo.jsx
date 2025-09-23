@@ -3,117 +3,92 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 
 function Todo() {
-    const [todos, setTodos] = useState([]);
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
+  const [todos, setTodos] = useState([]);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
-    useEffect(() => {
-        fetchTodos();
-    }, []);
+  useEffect(() => {
+    fetchTodos();
+  }, []);
 
-    const fetchTodos = async () => {
-        try {
-            const res = await axios.get("http://localhost:8000/api/v1/tasks");
-            setTodos(res.data.data); // API returns data wrapped in ApiResponse
-        } catch (err) {
-            console.error("Error fetching todos:", err);
-        }
-    };
+  const fetchTodos = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/api/v1/tasks");
+      setTodos(res.data.data); // API returns data wrapped in ApiResponse
+    } catch (err) {
+      console.error("Error fetching todos:", err);
+    }
+  };
 
-    const addTodo = async () => {
-        if (title.trim() === "" || description.trim() === "") {
-            alert("Both title and description are required!");
-            return;
-        }
-        try {
-            const res = await axios.post("http://localhost:8000/api/v1/tasks", {
-                title: title,
-                description: description
-            });
-            setTodos([...todos, res.data.data]); // API returns data wrapped in ApiResponse
-            setTitle("");
-            setDescription("");
-        } catch (err) {
-            console.error("Error adding todo:", err);
-        }
-    };
-
-
-    const deleteTodo = async (id) => {
-        try {
-            await axios.delete(`http://localhost:8000/api/v1/tasks/${id}`);
-            setTodos(todos.filter((todo) => todo._id !== id));
-        } catch (err) {
-            console.error("Error deleting todo:", err);
-        }
-    };
-
-    const updateTodo = async (id, status) => {
-        try {
-            const res = await axios.put(`http://localhost:8000/api/v1/tasks/${id}`, {
-                status: status
-            });
-            setTodos(todos.map(todo => 
-                todo._id === id ? res.data.data : todo
-            ));
-        } catch (err) {
-            console.error("Error updating todo:", err);
-        }
-    };
+  const addTodo = async () => {
+    if (title.trim() === "" || description.trim() === "") {
+      alert("Both title and description are required!");
+      return;
+    }
+    try {
+      const res = await axios.post("http://localhost:8000/api/v1/tasks", {
+        title: title,
+        description: description
+      });
+      setTodos([...todos, res.data.data]); // API returns data wrapped in ApiResponse
+      setTitle("");
+      setDescription("");
+    } catch (err) {
+      console.error("Error adding todo:", err);
+    }
+  };
 
 
-    return(
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(to right, #667eea, #764ba2)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "flex-start",
-        paddingTop: "40px",
-        fontFamily: "Inter, sans-serif"
-      }}
-    >
-      <div
-        style={{
-          backgroundColor: "white",
-          borderRadius: "10px",
-          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-          padding: "20px",
-          maxWidth: "600px",
-          width: "100%"
-        }}
-      >
-        <h2 style={{ textAlign: "center" }}>My Todo List</h2>
+  const deleteTodo = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8000/api/v1/tasks/${id}`);
+      setTodos(todos.filter((todo) => todo._id !== id));
+    } catch (err) {
+      console.error("Error deleting todo:", err);
+    }
+  };
+
+  const updateTodo = async (id, status) => {
+    try {
+      const res = await axios.put(`http://localhost:8000/api/v1/tasks/${id}`, {
+        status: status
+      });
+      setTodos(todos.map(todo =>
+        todo._id === id ? res.data.data : todo
+      ));
+    } catch (err) {
+      console.error("Error updating todo:", err);
+    }
+  };
+
+
+  return (
+
+    <div className="min-h-screen bg-gradient-to-r from-indigo-500 to-purple-600 flex justify-center pt-10 font-sans">
+      <div className="bg-white rounded-lg shadow-lg p-6 max-w-xl w-full">
+        <h2 className="text-center text-2xl font-semibold mb-6">My Todo List</h2>
 
         {/* Add Todo Form */}
-        <div style={{ marginBottom: "20px", padding: "15px", border: "1px solid #ccc", borderRadius: "5px" }}>
-          <h3>Add New Task</h3>
-          <div style={{ marginBottom: "10px" }}>
+        <div className="mb-6 p-4 border border-gray-300 rounded-md">
+          <h3 className="text-lg font-medium mb-3">Add New Task</h3>
+          <div className="mb-4">
             <input
               type="text"
               placeholder="Enter task title..."
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              style={{ width: "100%", padding: "8px", marginBottom: "10px" }}
+              className="w-full p-2 mb-3 border border-gray-300 rounded"
             />
             <textarea
               placeholder="Enter task description..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              style={{ width: "100%", padding: "8px", minHeight: "60px", resize: "vertical" }}
+              className="w-full p-2 min-h-[60px] resize-y border border-gray-300 rounded"
             />
           </div>
           <button
             onClick={addTodo}
-            style={{
-              background: "#007bff",
-              color: "white",
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "3px",
-              cursor: "pointer"
-            }}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
           >
             Add Task
           </button>
@@ -122,77 +97,48 @@ function Todo() {
         {/* Todo List */}
         <div>
           {todos.length === 0 ? (
-            <p style={{ textAlign: "center", color: "#666" }}>No tasks yet. Add one above!</p>
+            <p className="text-center text-gray-600">No tasks yet. Add one above!</p>
           ) : (
-            todos.map(todo => (
+            todos.map((todo) => (
               <div
                 key={todo._id}
-                style={{
-                  border: "1px solid #ddd",
-                  borderRadius: "5px",
-                  padding: "15px",
-                  marginBottom: "10px",
-                  backgroundColor: todo.status === 'completed' ? '#f0f8f0' : '#fff'
-                }}
+                className={`border border-gray-300 rounded-md p-4 mb-4 ${todo.status === 'completed' ? 'bg-green-50' : 'bg-white'
+                  }`}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                  <div style={{ flex: 1 }}>
+                <div className="flex justify-between items-start gap-4">
+                  <div className="flex-1">
                     <h4
-                      style={{
-                        margin: "0 0 5px 0",
-                        textDecoration: todo.status === 'completed' ? 'line-through' : 'none'
-                      }}
+                      className={`text-lg font-semibold mb-1 ${todo.status === 'completed' ? 'line-through text-gray-500' : ''
+                        }`}
                     >
                       {todo.title}
                     </h4>
-                    <p style={{ margin: "0 0 10px 0", color: "#666" }}>{todo.description}</p>
+                    <p className="text-sm text-gray-600 mb-2">{todo.description}</p>
                     <span
-                      style={{
-                        padding: "2px 8px",
-                        borderRadius: "3px",
-                        fontSize: "12px",
-                        backgroundColor:
-                          todo.status === 'completed'
-                            ? '#28a745'
-                            : todo.status === 'inprogress'
-                              ? '#ffc107'
-                              : '#6c757d',
-                        color: 'white'
-                      }}
+                      className={`inline-block text-xs px-2 py-1 rounded text-white ${todo.status === 'completed'
+                          ? 'bg-green-600'
+                          : todo.status === 'inprogress'
+                            ? 'bg-yellow-500'
+                            : 'bg-gray-600'
+                        }`}
                     >
                       {todo.status}
                     </span>
                   </div>
-                  <div style={{ display: "flex", gap: "5px", flexDirection: "column" }}>
+                  <div className="flex flex-col gap-2">
                     {todo.status !== 'completed' && (
                       <>
                         {todo.status === 'pending' && (
                           <button
                             onClick={() => updateTodo(todo._id, 'inprogress')}
-                            style={{
-                              background: "#ffc107",
-                              color: "white",
-                              padding: "5px 10px",
-                              border: "none",
-                              borderRadius: "3px",
-                              cursor: "pointer",
-                              fontSize: "12px"
-                            }}
+                            className="bg-yellow-500 hover:bg-yellow-600 text-white text-xs px-3 py-1 rounded"
                           >
                             Start
                           </button>
                         )}
                         <button
                           onClick={() => updateTodo(todo._id, 'completed')}
-                          style={{
-                            background: "#28a745",
-                            color: "white",
-                            padding: "5px 10px",
-                            border: "none",
-                            borderRadius: "3px",
-                            cursor: "pointer",
-                            fontSize: "12px"
-                          }}
+                          className="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1 rounded"
                         >
                           Complete
                         </button>
@@ -200,15 +146,7 @@ function Todo() {
                     )}
                     <button
                       onClick={() => deleteTodo(todo._id)}
-                      style={{
-                        background: "#dc3545",
-                        color: "white",
-                        padding: "5px 10px",
-                        border: "none",
-                        borderRadius: "3px",
-                        cursor: "pointer",
-                        fontSize: "12px"
-                      }}
+                      className="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1 rounded"
                     >
                       Delete
                     </button>
