@@ -2,7 +2,7 @@
 import { User } from "../models/user.model.js";
 import  jwt  from "jsonwebtoken";
 import { ApiError } from "../utils/apiError.js"
-import { ApiResponse } from "../utils/ApiResponse.js";
+import { ApiResponse } from "../utils/apiResponse.js";
 import { asynchandler } from "../utils/asynhandler.js";
 
 
@@ -141,10 +141,40 @@ const logout = asynchandler(async(req, res) => {
     )
 })
 
+const getMe = asynchandler(async(req, res) => {
+    const user = await User.findById(req.user._id).select("-password -refreshtoken")
+    if(!user){
+        throw new ApiError(404, "user not found")
+    }
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            user,
+            "user fetched successfully"
+        )
+    )
+})
 
+
+const getUserById = asynchandler(async (req, res) => {
+    const { userId } = req.params;
+    const user = await User.findById(userId).select("-password -refreshtoken");
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            user,
+            "User fetched successfully"
+        )
+    );
+});
 
 export {
     register,
     login,
-    logout
+    logout,
+    getMe,
+    getUserById
 }

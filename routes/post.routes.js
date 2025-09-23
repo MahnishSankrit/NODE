@@ -1,11 +1,12 @@
 
 import { Router } from "express";
 import { auth } from "../middlewares/auth.middleware.js";
-import { createPost, getallposts, getPostById, updatePost, deletePost, likePost } from "../controllers/post.controller.js";
+import { createPost, getallposts, getPostById, updatePost, deletePost, likePost, getPostByUser, searchPosts } from "../controllers/post.controller.js";
 
 const router = Router();
 
 
+router.get("/users/:userId", getUserById);
 // Create a post (authenticated)
 router.post("/createPost", auth, createPost);
 
@@ -23,5 +24,8 @@ router.put("/:postId", auth, updatePost);
 
 // Delete post (authenticated)
 router.delete("/:postId", auth, deletePost);
+
+router.get("/user/:userId", getPostByUser); // Get posts by user ID
+router.get("/search", searchPosts); // Search posts by title or tags    
 
 export default router;

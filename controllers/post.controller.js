@@ -325,19 +325,52 @@ const likePost = asynchandler(async(req, res) => {
     }
     
      // updating the postliked count 
-       post.likesCount = post.likes.length; // optional field for easy count
+       post.likecount = post.likes.length; // optional field for easy count
     await post.save();
 
     // Return likes array AND count
     return res.status(200).json(
         new ApiResponse(200, {
             likes: post.likes,
-            likeCount: post.likes.length
+            likecount: post.likes.length
         }, message)
     );
 })
 
+const getPostByUser = asynchandler(async (req, res) => {
+    const {userId} = req.params
+    if(!userId){
+        throw new ApiError(400, "userId is not found")
+    }
+    const posts = await Post.find({author: userId}).populate("author", "username email")
+    if(!posts.length){
+        throw new ApiError(404, "no posts found for this user")
+    }
 
+    return res.status(200).json(
+        new ApiResponse(200, posts, " user posts fetched successfully")
+    );
+})
+
+const searchPosts = asynchandler(async (req, res) => {
+    const { query } = req.query;
+    if(!query){
+        throw new ApiError(400, "search query is not found")
+    }
+    const posts = await Post.find({
+        $or: [
+            { title: { $regex: query, $options: "i" } },
+            { content: { $regex: query, $options: "i" } }
+        ]
+    }).populate("author", "username email");
+    if(!posts.length){
+        throw new ApiError(404, "no posts found")
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200, posts, "posts fetched successfully")
+    );
+})
 
 export{
     createPost,
@@ -345,5 +378,7 @@ export{
     getPostById,
     updatePost,
     deletePost,
-    likePost
+    likePost,
+    getPostByUser,
+    searchPosts
 }

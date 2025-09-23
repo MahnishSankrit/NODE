@@ -332,6 +332,45 @@ const replyComment = asynchandler(async(req, res) => {
     )
 })
 
+// ...existing code...
+
+// Get all replies to a specific comment
+const getRepliesByComment = asynchandler(async (req, res) => {
+    const { commentId } = req.params;
+    if (!commentId) {
+        throw new ApiError(400, "commentId is required");
+    }
+    const replies = await Comment.find({ parentComment: commentId })
+        .populate("user", "username email")
+        .sort({ createdAt: -1 });
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            replies,
+            "Replies fetched successfully"
+        )
+    );
+});
+
+// Get all comments by a specific user
+const getCommentsByUser = asynchandler(async (req, res) => {
+    const { userId } = req.params;
+    if (!userId) {
+        throw new ApiError(400, "userId is required");
+    }
+    const comments = await Comment.find({ user: userId })
+        .populate("post", "title")
+        .sort({ createdAt: -1 });
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            comments,
+            "User's comments fetched successfully"
+        )
+    );
+});
+
+// ...existing code...
 
 export {
     createComment,
@@ -339,6 +378,7 @@ export {
     updateComment,
     deleteComment,
     likeComment,
-    replyComment
-
+    replyComment,
+    getRepliesByComment,   // <-- add to exports
+    getCommentsByUser      // <-- add to exports
 }
