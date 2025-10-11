@@ -7,9 +7,6 @@ import { getRepliesByComment, getCommentsByUser } from "../controllers/comment.c
 const router = Router();
 
 
-router.get("/comments/replies/:commentId", getRepliesByComment);
-router.get("/comments/user/:userId", getCommentsByUser);
-
 // Create a comment on a post (authenticated)
 router.post("/createcomment", auth, createComment);
 
@@ -25,6 +22,9 @@ router.delete("/:commentId", auth, deleteComment);
 // Like or unlike a comment (authenticated)
 router.put("/like/:commentId", auth, likeComment);
 
+
+router.get("/comments/replies/:commentId", getRepliesByComment);
+router.get("/comments/user/:userId", getCommentsByUser);
 // Reply to a comment (authenticated)
 router.post("/reply/:postId", auth, replyComment);
 

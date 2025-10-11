@@ -11,9 +11,17 @@ function Todo() {
     fetchTodos();
   }, []);
 
+  const token = localStorage.getItem("token");
+  const axiosConfig = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+
+
   const fetchTodos = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/v1/tasks");
+      const res = await axios.get("http://localhost:8000/api/v1/mytodos", axiosConfig);
       setTodos(res.data.data); // API returns data wrapped in ApiResponse
     } catch (err) {
       console.error("Error fetching todos:", err);
@@ -26,10 +34,11 @@ function Todo() {
       return;
     }
     try {
-      const res = await axios.post("http://localhost:8000/api/v1/tasks", {
+      const res = await axios.post("http://localhost:8000/api/v1/mytodos", {
         title: title,
         description: description
-      });
+      }, axiosConfig);
+
       setTodos([...todos, res.data.data]); // API returns data wrapped in ApiResponse
       setTitle("");
       setDescription("");
@@ -41,7 +50,7 @@ function Todo() {
 
   const deleteTodo = async (id) => {
     try {
-      await axios.delete(`http://localhost:8000/api/v1/tasks/${id}`);
+      await axios.delete(`http://localhost:8000/api/v1/mytodos/${id}`, axiosConfig);
       setTodos(todos.filter((todo) => todo._id !== id));
     } catch (err) {
       console.error("Error deleting todo:", err);
@@ -50,9 +59,9 @@ function Todo() {
 
   const updateTodo = async (id, status) => {
     try {
-      const res = await axios.put(`http://localhost:8000/api/v1/tasks/${id}`, {
+      const res = await axios.put(`http://localhost:8000/api/v1/mytodos/${id}`, {
         status: status
-      });
+      }, axiosConfig);
       setTodos(todos.map(todo =>
         todo._id === id ? res.data.data : todo
       ));

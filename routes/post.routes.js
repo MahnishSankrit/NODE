@@ -6,7 +6,7 @@ import { createPost, getallposts, getPostById, updatePost, deletePost, likePost,
 const router = Router();
 
 
-router.get("/users/:userId", getUserById);
+
 // Create a post (authenticated)
 router.post("/createPost", auth, createPost);
 
@@ -16,6 +16,7 @@ router.get("/getallpost", getallposts);
 // Like/unlike post (authenticated)
 router.put("/like/:postId", auth, likePost);
 
+router.get("/search", searchPosts); // Search posts by title or tags    
 // Get single post by ID
 router.get("/:postId", getPostById);
 
@@ -26,6 +27,5 @@ router.put("/:postId", auth, updatePost);
 router.delete("/:postId", auth, deletePost);
 
 router.get("/user/:userId", getPostByUser); // Get posts by user ID
-router.get("/search", searchPosts); // Search posts by title or tags    
 
 export default router;

@@ -8,23 +8,36 @@ function Post() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [editingPost, setEditingPost] = useState(null); // track editing
+  const [editingPost, setEditingPost] = useState(null);
   const [editForm, setEditForm] = useState({ title: "", content: "", tags: "" });
 
   const token = localStorage.getItem("token");
+  // Get user from localStorage (adjust this if you store user differently)
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user?._id;
 
-  // Fetch posts
+  // Fetch only current user's posts
   const fetchPosts = async () => {
+    if (!userId) {
+      setPosts([]);
+      setLoading(false);
+      return;
+    }
     try {
-      const res = await axios.get("http://localhost:8000/api/v1/posts/getallpost");
-      setPosts(res.data.data.posts || []);
+      const res = await axios.get(`http://localhost:8000/api/v1/posts/user/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setPosts(res.data.data || []);
     } catch (error) {
       console.log("error while fetching posts: ", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchPosts().finally(() => setLoading(false));
+    fetchPosts();
+    // eslint-disable-next-line
   }, []);
 
   // Create post
@@ -36,7 +49,6 @@ function Post() {
         { title, content, tags: tags.split(",").map((tag) => tag.trim()) },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
       const newPost = response.data.data;
       setPosts((prev) => [newPost, ...prev]);
       setTitle("");
@@ -76,7 +88,6 @@ function Post() {
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
       setPosts((prev) =>
         prev.map((p) => (p._id === postId ? res.data.data : p))
       );
@@ -92,7 +103,7 @@ function Post() {
       await axios.delete(`http://localhost:8000/api/v1/posts/${postId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setPosts((prev) => prev.filter((p) => p._id !== postId)); // FIXED _id
+      setPosts((prev) => prev.filter((p) => p._id !== postId));
     } catch (error) {
       console.log("error deleting post", error);
     }
@@ -157,7 +168,7 @@ function Post() {
 
       {/* Posts List */}
       <div className="mt-10 space-y-4 max-w-2xl mx-auto">
-        <h2 className="text-white text-2xl font-bold mb-4">All Posts</h2>
+        <h2 className="text-white text-2xl font-bold mb-4">Your Posts</h2>
         {posts.length === 0 ? (
           <p className="text-gray-300">No posts available</p>
         ) : (

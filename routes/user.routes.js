@@ -1,6 +1,6 @@
 
 import { Router } from "express";
-import { logout,login, register, getUserById } from "../controllers/user.controller.js";
+import { logout,login, register, getUserById, getMe } from "../controllers/user.controller.js";
 import { auth } from "../middlewares/auth.middleware.js";
 
 

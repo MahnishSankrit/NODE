@@ -14,6 +14,11 @@ const fieldsSchema = new mongoose.Schema({
         type: String,
         enum: ["pending", "inprogress", "completed"],
         default: "pending"
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
     }
     
 }, {timestamps : true})
