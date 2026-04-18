@@ -9,7 +9,7 @@ import cors from "cors"
 
 
 const app = express();
-const corsOrigins = [
+const corsOrigin = [
   process.env.CORS_ORIGIN,
   "https://todoblog.mahnish.me",
   "http://localhost:5173"
