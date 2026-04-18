@@ -32,47 +32,34 @@ function User({ onLogout, close }) {
   if (!open || !user) return null;
 
   return (
-    <div
-      ref={cardRef}
-      className="flex flex-col justify-center items-center w-full max-w-md bg-white text-black shadow-lg rounded-xl p-6 z-50 mx-auto mt-10"
-    >
-      <div className="flex justify-center items-center w-full mb-4">
+    <div ref={cardRef} className="glass-panel w-[22rem] rounded-[28px] p-6 text-slate-900">
+      <div className="flex flex-col items-center text-center">
         <img
-          src={user.avatar || "/placeholder-avatar.png"} // fallback if no avatar
+          src={user.avatar || "/placeholder-avatar.png"}
           alt="User Avatar"
-          className="w-24 h-24 rounded-full object-cover border-2"
+          className="h-20 w-20 rounded-full border-4 border-white object-cover shadow-md"
         />
+        <h2 className="mt-4 text-lg font-semibold tracking-tight">{user.fullName || user.username}</h2>
+        <p className="text-sm text-slate-500">{user.email}</p>
       </div>
 
-      <div className='border-2 rounded-2xl p-3 flex flex-row space-x-2 w-full mb-2'>
-        <h2 className="font-bold text-sm">Full Name:</h2>
-        <p className="text-sm text-gray-500 font-medium">{user.fullName}</p>
+      {/* UI refresh: information rows are now easier to scan */}
+      <div className="mt-6 space-y-3 rounded-2xl bg-slate-50 p-4">
+        <div className='flex items-center justify-between text-sm'>
+          <span className="font-medium text-slate-700">Username</span>
+          <span className="text-slate-500">{user.username}</span>
+        </div>
+        <div className='flex items-center justify-between text-sm'>
+          <span className="font-medium text-slate-700">Role</span>
+          <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{user.role}</span>
+        </div>
       </div>
-      <div className='border-2 rounded-2xl p-3 flex flex-row space-x-2 w-full mb-2'>
-        <h2 className="font-bold text-sm">UserName:</h2>
-        <p className="text-sm text-gray-500 font-medium">{user.username}</p>
-      </div>
-      <div className='border-2 rounded-2xl p-3 flex flex-row space-x-2 w-full mb-2'>
-        <h2 className="font-bold text-sm">Email:</h2>
-        <p className="text-sm text-gray-500 font-medium">{user.email}</p>
-      </div>
-      <div className='border-2 rounded-2xl p-3 flex flex-row space-x-2 w-full mb-4'>
-        <h2 className="font-bold text-sm">Role:</h2>
-        <p className="text-sm text-gray-600">{user.role}</p>
-      </div>
-      <div className='flex flex-row justify-center items-center space-x-4 w-full'>
-        <button className="w-1/2 px-4 py-2 hover:bg-gray-100 border-2 rounded-2xl">
-          Edit Profile
-        </button>
-        <button
-          onClick={onLogout}
-          className="w-1/2 px-4 py-2 hover:bg-red-100 text-red-600 border-2 rounded-2xl"
-        >
-          Logout
-        </button>
+
+      <div className='mt-5 grid grid-cols-2 gap-3'>
+        <button className="btn-secondary px-3 py-2.5">Edit Profile</button>
+        <button onClick={onLogout} className="btn-danger px-3 py-2.5">Logout</button>
       </div>
     </div>
-
   );
 }
 

@@ -18,6 +18,8 @@ pids/
 # dotenv environment files
 .env
 .env.*   # for .env.development, .env.production, etc.
+env
+
 
 # OS-specific files
 .DS_Store

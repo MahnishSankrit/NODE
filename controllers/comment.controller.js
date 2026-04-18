@@ -183,7 +183,7 @@ const deleteComment = asynchandler(async(req, res) => {
         throw new ApiError(400, "comment is not found")
     }
      if (comment.user.toString() !== req.user._id.toString()) {
-        throw new ApiError(403, "You are not authorized to update this comment");
+        throw new ApiError(403, "You are not authorized to delete this comment");
     }
 
     await Post.findByIdAndUpdate(comment.post, { $inc: { commentCount: -1 } });
@@ -240,17 +240,17 @@ const likeComment = asynchandler(async(req, res) => {
     }
 
     let message;  // checking if the user is already added the comentlike
-    if(comment.likes.includes(userId.toString())){  //Always convert _id to string when comparing MongoDB ObjectIds:
-        //unlike
-        comment.likes.pull(userId)
-        message = " comment is unliked"
-    }else{
-        comment.likes.push(userId)
-        message = "comment is liked"
+    const alreadyLiked = comment.likes.some((id) => id.toString() === userId.toString());
+    if (alreadyLiked) {  // user has liked before -> unlike
+        comment.likes.pull(userId);
+        message = " comment is unliked";
+    } else {
+        comment.likes.push(userId);
+        message = "comment is liked";
     }
 
     comment.likeCount = comment.likes.length;
-    await comment.save()
+    await comment.save();
 
     return res.status(200)
     .json(
@@ -319,6 +319,9 @@ const replyComment = asynchandler(async(req, res) => {
         parentComment
     })
 
+    // populate minimal user info for client display consistency
+    await reply.populate("user", "username email");
+
     post.commentCount += 1;
     await post.save()
 
@@ -326,7 +329,7 @@ const replyComment = asynchandler(async(req, res) => {
     .json(
         new ApiResponse(
             200,
-            reply,
+            { comment: reply, commentCount: post.commentCount },
             "reply comment is generated successfully"
         )
     )
