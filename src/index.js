@@ -9,7 +9,16 @@ import cors from "cors"
 
 
 const app = express();
-const corsOrigin = process.env.CORS_ORIGIN ||"https://todoblog.mahnish.me" || "http://localhost:5173";
+const corsOrigins = [
+  process.env.CORS_ORIGIN,
+  "https://todoblog.mahnish.me",
+  "http://localhost:5173"
+].filter(Boolean);
+
+// app.use(cors({
+//   origin: corsOrigins,
+//   credentials: true
+// }));
 //using the cors for my frontend 
 app.use(cors({
     origin: corsOrigin,
